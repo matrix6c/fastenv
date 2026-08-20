@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Redis } from '@upstash/redis';
 import type { CiphertextBlob } from './types.js';
 import { ConfigError, RedisError } from './types.js';
