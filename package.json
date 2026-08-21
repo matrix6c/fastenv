@@ -1,6 +1,6 @@
 {
   "name": "@olabodelawal/fastenv",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "type": "module",
   "bin": {
     "fast": "./dist/bin/fast.js"
