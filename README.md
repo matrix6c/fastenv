@@ -33,21 +33,6 @@ Developers routinely share `.env` files by pasting them into Slack, WhatsApp, em
 npm install -g fastenv
 ```
 
-## Setup
-
-`fastenv` needs an Upstash Redis instance to store encrypted blobs temporarily. Upstash has a free tier that takes under a minute to set up.
-
-1. Create a free database at [upstash.com](https://upstash.com).
-2. Copy your REST URL and REST token from the Upstash console.
-3. Set them as environment variables:
-
-```bash
-export UPSTASH_REDIS_REST_URL="https://your-instance.upstash.io"
-export UPSTASH_REDIS_REST_TOKEN="your-token"
-```
-
-(Or place them in a `.env` file in your shell config / project — just don't confuse this with the `.env` file you're trying to share.)
-
 ## Usage
 
 ### Encrypt and share
@@ -125,11 +110,6 @@ Overwrites your existing `.env` completely with the decrypted content, no questi
 - **Expiry:** every lock expires automatically via Redis's native TTL. The default is 100 seconds; you can set a custom duration with suffixes `s` (seconds), `m` (minutes), or `h` (hours).
 - **Access:** anyone with the full key can decrypt until it expires. There's no single-use restriction — treat the key itself as a secret for those 24 hours, the same way you'd treat any other credential.
 - **Tampering:** any modification to the stored ciphertext is detected and rejected via GCM authentication — it fails loudly rather than producing corrupted output.
-
-## Costs and limits
-
-- Upstash's free tier is sufficient for testing and normal use; see [Upstash pricing](https://upstash.com/pricing) for current limits.
-- No other paid services are required to run `fastenv`.
 
 ## Built with Kiro
 
