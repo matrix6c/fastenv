@@ -1,26 +1,17 @@
-import 'dotenv/config';
 import { Redis } from '@upstash/redis';
 import type { CiphertextBlob } from './types.js';
-import { ConfigError, RedisError } from './types.js';
+import { RedisError } from './types.js';
 
 export const DEFAULT_EXPIRY_SECONDS = 100;
 
+const UPSTASH_URL = 'https://perfect-shark-133459.upstash.io';
+const UPSTASH_TOKEN = 'gQAAAAAAAglTAAIgcDExMWU0M2ZlYWJjNTM0YTBiOWU4YzJjNTFhNDRjN2NjNA';
+
 /**
- * Creates and validates the Redis client from environment variables.
- * @throws ConfigError if UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN not set
+ * Creates the Redis client with embedded credentials.
  */
 export function createClient(): Redis {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  if (!url) {
-    throw new ConfigError('Missing environment variable: UPSTASH_REDIS_REST_URL');
-  }
-  if (!token) {
-    throw new ConfigError('Missing environment variable: UPSTASH_REDIS_REST_TOKEN');
-  }
-
-  return new Redis({ url, token });
+  return new Redis({ url: UPSTASH_URL, token: UPSTASH_TOKEN });
 }
 
 /**
