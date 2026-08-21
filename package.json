@@ -1,6 +1,6 @@
 {
   "name": "@olabodelawal/fastenv",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "bin": {
     "fast": "./dist/bin/fast.js"
@@ -24,15 +24,22 @@
     "typescript": "^5.9.3",
     "vitest": "^2.0.0"
   },
-
   "description": "CLI tool for encrypting and managing .env files",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/matrix6c/fastenv.git"
   },
-  "keywords": ["env", "encryption", "cli", "dotenv"],
-  "files": ["dist", "bin"],
+  "keywords": [
+    "env",
+    "encryption",
+    "cli",
+    "dotenv"
+  ],
+  "files": [
+    "dist",
+    "bin"
+  ],
   "engines": {
     "node": ">=18"
   }
