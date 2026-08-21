@@ -22,7 +22,7 @@ describe('Integration: encrypt/decrypt round-trip', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'elock-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'fastenv-test-'));
     process.env = {
       ...originalEnv,
       UPSTASH_REDIS_REST_URL: 'https://test.upstash.io',
@@ -84,7 +84,7 @@ describe('Integration: encrypt/decrypt round-trip', () => {
     consoleSpy.mockClear();
 
     // Change cwd to a new temp dir for decrypt (no existing .env)
-    const decryptDir = mkdtempSync(join(tmpdir(), 'elock-decrypt-'));
+    const decryptDir = mkdtempSync(join(tmpdir(), 'fastenv-decrypt-'));
     const originalCwd = process.cwd();
     process.chdir(decryptDir);
 

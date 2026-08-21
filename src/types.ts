@@ -52,42 +52,42 @@ export interface DiffResult {
 
 // ─── Custom Error Classes ─────────────────────────────────────────────────────
 
-export class ElockError extends Error {
+export class FastenvError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'ElockError';
+    this.name = 'FastenvError';
   }
 }
 
-export class FileError extends ElockError {
+export class FileError extends FastenvError {
   constructor(message: string) {
     super(message);
     this.name = 'FileError';
   }
 }
 
-export class TokenError extends ElockError {
+export class TokenError extends FastenvError {
   constructor(message: string) {
     super(message);
     this.name = 'TokenError';
   }
 }
 
-export class RedisError extends ElockError {
+export class RedisError extends FastenvError {
   constructor(message: string) {
     super(message);
     this.name = 'RedisError';
   }
 }
 
-export class CryptoError extends ElockError {
+export class CryptoError extends FastenvError {
   constructor(message: string) {
     super(message);
     this.name = 'CryptoError';
   }
 }
 
-export class ConfigError extends ElockError {
+export class ConfigError extends FastenvError {
   constructor(message: string) {
     super(message);
     this.name = 'ConfigError';

@@ -1,13 +1,13 @@
 {
-  "name": "elock",
+  "name": "fastenv",
   "version": "1.0.0",
   "type": "module",
   "bin": {
-    "elock": "./dist/bin/elock.js"
+    "fast": "./dist/bin/fast.js"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsx bin/elock.ts",
+    "dev": "tsx bin/fast.ts",
     "test": "vitest --run"
   },
   "dependencies": {

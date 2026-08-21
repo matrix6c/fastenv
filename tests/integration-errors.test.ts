@@ -23,7 +23,7 @@ describe('Integration: error paths', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'elock-err-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'fastenv-err-'));
     process.env = { ...originalEnv, UPSTASH_REDIS_REST_URL: 'https://test.upstash.io', UPSTASH_REDIS_REST_TOKEN: 'test-token' };
     vi.clearAllMocks();
   });

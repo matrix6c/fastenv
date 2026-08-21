@@ -124,7 +124,7 @@ describe('applyMerge', () => {
     const result = applyMerge(entries, newKeys, []);
     const lines = result.split('\n');
     expect(lines[0]).toBe('A=1');
-    expect(lines[1]).toBe('# --- added by elock 2024-06-15 ---');
+    expect(lines[1]).toBe('# --- added by fastenv 2024-06-15 ---');
     expect(lines[2]).toBe('B=2');
 
     vi.useRealTimers();
@@ -179,7 +179,7 @@ describe('applyMerge', () => {
     ];
     const result = applyMerge(entries, [], []);
     expect(result).toBe('A=1');
-    expect(result).not.toContain('added by elock');
+    expect(result).not.toContain('added by fastenv');
   });
 });
 

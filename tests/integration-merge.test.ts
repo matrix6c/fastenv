@@ -97,10 +97,10 @@ describe('Integration: merge workflow', () => {
 
     // Adds new key C=3 under the dated header
     expect(mergedOutput).toContain('C=3');
-    expect(mergedOutput).toMatch(/# --- added by elock \d{4}-\d{2}-\d{2} ---/);
+    expect(mergedOutput).toMatch(/# --- added by fastenv \d{4}-\d{2}-\d{2} ---/);
 
     // Verify the dated header appears before C=3
-    const headerIndex = mergedOutput.indexOf('# --- added by elock');
+    const headerIndex = mergedOutput.indexOf('# --- added by fastenv');
     const cKeyIndex = mergedOutput.indexOf('C=3');
     expect(headerIndex).toBeLessThan(cKeyIndex);
 
@@ -150,10 +150,10 @@ describe('Integration: merge workflow', () => {
     expect(mergedOutput).toContain('Y=updated_y');
     expect(mergedOutput).not.toContain('Y=old_y');
 
-    // Adds new keys X and Z under elock header
+    // Adds new keys X and Z under fastenv header
     expect(mergedOutput).toContain('X=new_x');
     expect(mergedOutput).toContain('Z=new_z');
-    expect(mergedOutput).toMatch(/# --- added by elock \d{4}-\d{2}-\d{2} ---/);
+    expect(mergedOutput).toMatch(/# --- added by fastenv \d{4}-\d{2}-\d{2} ---/);
 
     // Verify structural ordering: comments and blank lines precede the keys
     const lines = mergedOutput.split('\n');

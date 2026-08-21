@@ -54,7 +54,7 @@ export function applyMerge(
 
   if (acceptedNew.length > 0) {
     const date = new Date().toISOString().split('T')[0];
-    lines.push(`# --- added by elock ${date} ---`);
+    lines.push(`# --- added by fastenv ${date} ---`);
     for (const { key, value } of acceptedNew) {
       lines.push(`${key}=${value}`);
     }

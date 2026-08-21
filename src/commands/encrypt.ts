@@ -4,7 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { encrypt } from '../crypto.js';
 import { encode } from '../token.js';
 import { store } from '../redis.js';
-import { FileError, RedisError, ConfigError, ElockError } from '../types.js';
+import { FileError, RedisError, ConfigError, FastenvError } from '../types.js';
 
 export async function encryptCommand(filePath?: string): Promise<void> {
   const target = resolve(filePath ?? '.env');
@@ -25,7 +25,7 @@ export async function encryptCommand(filePath?: string): Promise<void> {
   try {
     await store(idHex, blob);
   } catch (err) {
-    if (err instanceof ElockError) throw err;
+    if (err instanceof FastenvError) throw err;
     throw new RedisError('Failed to upload encrypted data to Redis');
   }
 

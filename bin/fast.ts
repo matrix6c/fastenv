@@ -5,13 +5,13 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encryptCommand } from '../src/commands/encrypt.js';
 import { decryptCommand } from '../src/commands/decrypt.js';
-import { ElockError } from '../src/types.js';
+import { FastenvError } from '../src/types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
 
 program
-  .name('elock')
+  .name('fast')
   .description('Securely share .env files with teammates')
   .version(pkg.version);
 
@@ -22,7 +22,7 @@ program
     try {
       await encryptCommand(path);
     } catch (err) {
-      if (err instanceof ElockError) {
+      if (err instanceof FastenvError) {
         process.stderr.write(`Error: ${err.message}\n`);
         process.exit(1);
       }
@@ -39,7 +39,7 @@ program
     try {
       await decryptCommand(key, options);
     } catch (err) {
-      if (err instanceof ElockError) {
+      if (err instanceof FastenvError) {
         process.stderr.write(`Error: ${err.message}\n`);
         process.exit(1);
       }
