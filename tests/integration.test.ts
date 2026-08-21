@@ -76,7 +76,7 @@ describe('Integration: encrypt/decrypt round-trip', () => {
     expect(storedBlob.authTag.length).toBeGreaterThan(0);
 
     // Verify expiry was set
-    expect(options).toEqual({ ex: 86400 });
+    expect(options).toEqual({ ex: 100 });
 
     // Set up mock for decrypt retrieval — return the stored blob as a string
     // (the retrieve function parses it from what Redis returns)

@@ -3,7 +3,7 @@ import { program } from 'commander';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { encryptCommand } from '../src/commands/encrypt.js';
+import { encryptCommand, parseDuration } from '../src/commands/encrypt.js';
 import { decryptCommand } from '../src/commands/decrypt.js';
 import { FastenvError } from '../src/types.js';
 
@@ -18,9 +18,18 @@ program
 program
   .command('encrypt [path]')
   .description('Encrypt a .env file and get a shareable key')
-  .action(async (path?: string) => {
+  .argument('[expiry]', 'Expiry duration (e.g. 30s, 5m, 2h). Defaults to 100s')
+  .action(async (path?: string, expiry?: string) => {
     try {
-      await encryptCommand(path);
+      let expirySeconds: number | undefined;
+      // Check if 'path' is actually a duration (e.g. "5m") and no separate expiry given
+      if (path && /^\d+[smh]$/i.test(path)) {
+        expirySeconds = parseDuration(path);
+        path = undefined;
+      } else if (expiry) {
+        expirySeconds = parseDuration(expiry);
+      }
+      await encryptCommand(path, expirySeconds);
     } catch (err) {
       if (err instanceof FastenvError) {
         process.stderr.write(`Error: ${err.message}\n`);

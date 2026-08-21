@@ -88,7 +88,7 @@ describe('redis module', () => {
       expect(mockSet).toHaveBeenCalledWith(
         'test-id',
         JSON.stringify(blob),
-        { ex: 86400 }
+        { ex: 100 }
       );
     });
   });

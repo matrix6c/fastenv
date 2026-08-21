@@ -3,7 +3,7 @@ import { Redis } from '@upstash/redis';
 import type { CiphertextBlob } from './types.js';
 import { ConfigError, RedisError } from './types.js';
 
-const EXPIRY_SECONDS = 86400;
+export const DEFAULT_EXPIRY_SECONDS = 100;
 
 /**
  * Creates and validates the Redis client from environment variables.
@@ -24,12 +24,15 @@ export function createClient(): Redis {
 }
 
 /**
- * Stores a ciphertext blob in Redis with 24h expiry.
+ * Stores a ciphertext blob in Redis with configurable expiry.
+ * @param id - Redis key
+ * @param blob - Encrypted payload
+ * @param expiry - Expiry in seconds (defaults to DEFAULT_EXPIRY_SECONDS)
  * @throws RedisError if connection fails
  */
-export async function store(id: string, blob: CiphertextBlob): Promise<void> {
+export async function store(id: string, blob: CiphertextBlob, expiry: number = DEFAULT_EXPIRY_SECONDS): Promise<void> {
   const client = createClient();
-  await client.set(id, JSON.stringify(blob), { ex: EXPIRY_SECONDS });
+  await client.set(id, JSON.stringify(blob), { ex: expiry });
 }
 
 /**
