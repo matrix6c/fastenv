@@ -30,7 +30,7 @@ Developers routinely share `.env` files by pasting them into Slack, WhatsApp, em
 ## Install
 
 ```bash
-npm install -g fastenv
+npm install -g @olabodelawal/fastenv
 ```
 
 ## Usage
