@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import { readFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { encryptCommand, parseDuration } from '../src/commands/encrypt.js';
 import { decryptCommand } from '../src/commands/decrypt.js';
 import { FastenvError } from '../src/types.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
+import pkg from '../package.json' with { type: 'json' };
 
 program
   .name('fast')
