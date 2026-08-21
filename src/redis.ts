@@ -4,8 +4,8 @@ import { RedisError } from './types.js';
 
 export const DEFAULT_EXPIRY_SECONDS = 100;
 
-const UPSTASH_URL = 'https://perfect-shark-133459.upstash.io';
-const UPSTASH_TOKEN = 'gQAAAAAAAglTAAIgcDExMWU0M2ZlYWJjNTM0YTBiOWU4YzJjNTFhNDRjN2NjNA';
+const UPSTASH_URL = "https://relieved-beetle-158685.upstash.io";
+const UPSTASH_TOKEN = "gQAAAAAAAmvdAAIgcDE0ZDk2YjFhNDEzODg0ZjhjYjAzZTE0OTUwMTJkYzYwYw";
 
 /**
  * Creates the Redis client with embedded credentials.
