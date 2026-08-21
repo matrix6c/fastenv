@@ -1,18 +1,22 @@
-# elock
-
-Encrypt a `.env` file, share one key, decrypt it anywhere — with smart merging into an existing `.env`.
-
-`elock` is a CLI tool for sharing environment variables securely without pasting them into Slack, email, or a README. Encrypt your `.env`, share a single key, and your teammate decrypts it locally — with an interactive merge if they already have their own `.env`.
+# elock — secure, one-command .env sharing
 
 Built for the [Ready, Spec, Ship Hackathon](https://codingagents.fyi) using [Kiro](https://kiro.dev).
 
-## Why
+## Problem
 
-Sharing `.env` files is still mostly: paste into Slack, drop it in a WhatsApp chat, attach it to an email, send it over Telegram, or manually retype it from a stale README. Every one of those leaves plaintext secrets sitting in a chat history or inbox indefinitely, on a platform that was never meant to hold credentials, with no expiry and no easy way to know who's seen it.
+Developers routinely share `.env` files by pasting them into Slack, WhatsApp, email, or Telegram — leaving plaintext secrets sitting in chat histories and inboxes indefinitely, with no expiry and no clean way to hand off an update without overwriting a teammate's existing values.
 
-None of that is secure, and none of it handles the common case where the person receiving it already has their own `.env` with values you shouldn't blindly overwrite.
+## Solution
 
-`elock` bridges that gap: one command to encrypt and share, one command to decrypt and merge, and the secret is gone from existence 24 hours later — no chat log to scrub, no inbox to worry about.
+`elock` is a CLI tool that encrypts a `.env` file client-side, uploads only the encrypted blob to Upstash Redis, and returns a single shareable key. The recipient runs one command to decrypt it — and if they already have their own `.env`, `elock` walks them through merging just the new and changed keys instead of blindly overwriting. Every key expires automatically 24 hours after creation, so nothing lingers the way a chat message does.
+
+## Key features
+
+- One command to encrypt and share (`elock encrypt`), one to decrypt (`elock decrypt`)
+- Client-side-only AES-256-GCM encryption — the backend never sees plaintext or the decryption key
+- Smart merge flow: new keys, changed keys, and untouched keys are diffed and handled separately, not overwritten wholesale
+- `--dry-run` to preview the merge before committing, `--replace` to skip it entirely
+- Fixed 24-hour expiry on every share — no config, no leftover secrets
 
 ## How it works
 
