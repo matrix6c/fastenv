@@ -1,6 +1,6 @@
 # fastenv — secure, one-command .env sharing
 
-Built for the [Ready, Spec, Ship Hackathon](https://codingagents.fyi) using [Kiro](https://kiro.dev).
+<!-- Built for the [Ready, Spec, Ship Hackathon](https://codingagents.fyi) using [Kiro](https://kiro.dev). -->
 
 ## Problem
 
