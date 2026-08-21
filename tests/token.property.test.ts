@@ -5,7 +5,7 @@ import { encode, decode } from '../src/token.js';
 describe('token properties', () => {
   /**
    * Property 2: Token encode/decode round-trip
-   * For any random 8-byte ID and 32-byte secret key, encoding with encode(id, secretKey)
+   * For any random 4-byte ID and 16-byte secret key, encoding with encode(id, secretKey)
    * then decoding with decode() SHALL produce buffers identical to the original ID and secret key.
    *
    * Validates: Requirements 5.3, 5.5, 5.6, 5.7, 10.2
@@ -13,8 +13,8 @@ describe('token properties', () => {
   it('Property 2: encode/decode round-trip for arbitrary ID and key', () => {
     fc.assert(
       fc.property(
-        fc.uint8Array({ minLength: 8, maxLength: 8 }),
-        fc.uint8Array({ minLength: 32, maxLength: 32 }),
+        fc.uint8Array({ minLength: 4, maxLength: 4 }),
+        fc.uint8Array({ minLength: 16, maxLength: 16 }),
         (idArr, keyArr) => {
           const id = Buffer.from(idArr);
           const secretKey = Buffer.from(keyArr);
@@ -37,8 +37,8 @@ describe('token properties', () => {
   it('Property 3: case-insensitive decode produces same result', () => {
     fc.assert(
       fc.property(
-        fc.uint8Array({ minLength: 8, maxLength: 8 }),
-        fc.uint8Array({ minLength: 32, maxLength: 32 }),
+        fc.uint8Array({ minLength: 4, maxLength: 4 }),
+        fc.uint8Array({ minLength: 16, maxLength: 16 }),
         (idArr, keyArr) => {
           const id = Buffer.from(idArr);
           const secretKey = Buffer.from(keyArr);

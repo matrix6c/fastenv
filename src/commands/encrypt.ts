@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { encrypt } from '../crypto.js';
-import { encode } from '../token.js';
+import { encode, ID_LENGTH } from '../token.js';
 import { store } from '../redis.js';
 import { FileError, RedisError, ConfigError, FastenvError } from '../types.js';
 
@@ -40,7 +40,7 @@ export async function encryptCommand(filePath?: string, expiry?: number): Promis
 
   const { blob, key } = encrypt(content);
 
-  const id = randomBytes(8);
+  const id = randomBytes(ID_LENGTH);
   const token = encode(id, key);
 
   const idHex = id.toString('hex');

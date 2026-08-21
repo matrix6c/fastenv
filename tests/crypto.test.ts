@@ -12,10 +12,10 @@ describe('crypto', () => {
       expect(result.blob.authTag).toMatch(/^[0-9a-f]+$/);
     });
 
-    it('returns a 32-byte key', () => {
+    it('returns a 16-byte key', () => {
       const result = encrypt('test');
       expect(result.key).toBeInstanceOf(Buffer);
-      expect(result.key.length).toBe(32);
+      expect(result.key.length).toBe(16);
     });
 
     it('generates a 12-byte IV (24 hex chars)', () => {
@@ -87,7 +87,7 @@ describe('crypto', () => {
 
     it('throws CryptoError with wrong key', () => {
       const { blob } = encrypt('secret');
-      const wrongKey = randomBytes(32);
+      const wrongKey = randomBytes(16);
       expect(() => decrypt(blob, wrongKey)).toThrow(CryptoError);
     });
 
@@ -112,7 +112,7 @@ describe('crypto', () => {
     it('error message does not reveal key or plaintext', () => {
       const plaintext = 'super_secret_value_12345';
       const { blob, key } = encrypt(plaintext);
-      const wrongKey = randomBytes(32);
+      const wrongKey = randomBytes(16);
       try {
         decrypt(blob, wrongKey);
       } catch (err) {

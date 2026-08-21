@@ -1,6 +1,12 @@
 import type { DecodedToken } from './types.js';
 import { TokenError } from './types.js';
 
+/** Length of the random ID in bytes. */
+export const ID_LENGTH = 4;
+
+/** Total decoded token payload length in bytes (ID + key). */
+export const TOTAL_LENGTH = 20;
+
 /**
  * Custom base32 alphabet excluding ambiguous characters (0/O, 1/l/I).
  * 32 characters: 2-9, A-H, J-N, P-T, V-Z (uppercase canonical)
@@ -10,11 +16,11 @@ export const ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ' as const;
 const PREFIX = 'envlock_';
 
 /**
- * Encodes an 8-byte ID and 32-byte secret key into a shareable token string.
- * Format: envlock_XXXX-XXXX-XXXX-... (base32 in 4-char dash-separated chunks)
+ * Encodes a 4-byte ID and 16-byte secret key into a shareable token string.
+ * Format: envlock_XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (base32 in 4-char dash-separated chunks)
  */
 export function encode(id: Buffer, secretKey: Buffer): string {
-  const combined = Buffer.concat([id, secretKey]); // 40 bytes
+  const combined = Buffer.concat([id, secretKey]); // 20 bytes
   const encoded = base32Encode(combined);
   const chunks = encoded.match(/.{1,4}/g)!;
   return PREFIX + chunks.join('-');
@@ -39,13 +45,13 @@ export function decode(token: string): DecodedToken {
 
   const bytes = base32Decode(normalized);
 
-  if (bytes.length !== 40) {
-    throw new TokenError('Invalid token: expected 40 bytes after decoding');
+  if (bytes.length !== TOTAL_LENGTH) {
+    throw new TokenError('Invalid token: expected 20 bytes after decoding');
   }
 
   return {
-    id: bytes.subarray(0, 8),
-    secretKey: bytes.subarray(8, 40),
+    id: bytes.subarray(0, ID_LENGTH),
+    secretKey: bytes.subarray(ID_LENGTH, TOTAL_LENGTH),
   };
 }
 

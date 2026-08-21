@@ -38,7 +38,7 @@ describe('Integration: error paths', () => {
   });
 
   it('expired key (Redis returns null) produces RedisError', async () => {
-    const validToken = encode(Buffer.alloc(8), Buffer.alloc(32));
+    const validToken = encode(Buffer.alloc(4), Buffer.alloc(16));
     mockGet.mockResolvedValue(null);
 
     await expect(decryptCommand(validToken, {})).rejects.toThrow(RedisError);

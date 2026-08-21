@@ -133,8 +133,8 @@ describe('encrypt command', () => {
 
       expect(mockStore).toHaveBeenCalledTimes(1);
       const [id, blob] = mockStore.mock.calls[0];
-      // ID should be a hex string (8 random bytes = 16 hex chars)
-      expect(id).toMatch(/^[0-9a-f]{16}$/);
+      // ID should be a hex string (4 random bytes = 8 hex chars)
+      expect(id).toMatch(/^[0-9a-f]{8}$/);
       // Blob should have the required ciphertext fields
       expect(blob).toHaveProperty('ciphertext');
       expect(blob).toHaveProperty('iv');

@@ -26,17 +26,17 @@ describe('token', () => {
       expect(decoded).toEqual(buf);
     });
 
-    it('round-trips a 40-byte buffer (token payload size)', () => {
-      const buf = randomBytes(40);
+    it('round-trips a 20-byte buffer (token payload size)', () => {
+      const buf = randomBytes(20);
       const encoded = base32Encode(buf);
       const decoded = base32Decode(encoded);
       expect(decoded).toEqual(buf);
     });
 
-    it('encodes 40 bytes to 64 base32 characters', () => {
-      const buf = randomBytes(40);
+    it('encodes 20 bytes to 32 base32 characters', () => {
+      const buf = randomBytes(20);
       const encoded = base32Encode(buf);
-      expect(encoded.length).toBe(64);
+      expect(encoded.length).toBe(32);
     });
 
     it('throws TokenError for invalid characters', () => {
@@ -46,8 +46,8 @@ describe('token', () => {
 
   describe('encode / decode', () => {
     it('round-trips random ID and secretKey', () => {
-      const id = randomBytes(8);
-      const secretKey = randomBytes(32);
+      const id = randomBytes(4);
+      const secretKey = randomBytes(16);
       const token = encode(id, secretKey);
       const result = decode(token);
       expect(Buffer.from(result.id)).toEqual(id);
@@ -55,15 +55,15 @@ describe('token', () => {
     });
 
     it('produces token with envlock_ prefix', () => {
-      const id = randomBytes(8);
-      const secretKey = randomBytes(32);
+      const id = randomBytes(4);
+      const secretKey = randomBytes(16);
       const token = encode(id, secretKey);
       expect(token.startsWith('envlock_')).toBe(true);
     });
 
     it('produces token with dash-separated 4-char chunks after prefix', () => {
-      const id = randomBytes(8);
-      const secretKey = randomBytes(32);
+      const id = randomBytes(4);
+      const secretKey = randomBytes(16);
       const token = encode(id, secretKey);
       const body = token.slice('envlock_'.length);
       const chunks = body.split('-');
@@ -77,8 +77,8 @@ describe('token', () => {
     });
 
     it('decodes case-insensitively', () => {
-      const id = randomBytes(8);
-      const secretKey = randomBytes(32);
+      const id = randomBytes(4);
+      const secretKey = randomBytes(16);
       const token = encode(id, secretKey);
 
       const lowerToken = token.toLowerCase();
@@ -104,13 +104,13 @@ describe('token', () => {
     });
 
     it('throws TokenError for wrong decoded length', () => {
-      // Encode only 10 bytes instead of 40
+      // Encode only 10 bytes instead of 20
       const shortBuf = randomBytes(10);
       const encoded = base32Encode(shortBuf);
       const chunks = encoded.match(/.{1,4}/g)!;
       const badToken = 'envlock_' + chunks.join('-');
       expect(() => decode(badToken)).toThrow(TokenError);
-      expect(() => decode(badToken)).toThrow('expected 40 bytes');
+      expect(() => decode(badToken)).toThrow('expected 20 bytes');
     });
 
     it('throws TokenError for invalid characters in body', () => {

@@ -62,7 +62,7 @@ describe('Integration: encrypt/decrypt round-trip', () => {
     expect(mockSet).toHaveBeenCalledTimes(1);
     const [storedId, storedBlobJson, options] = mockSet.mock.calls[0];
     expect(typeof storedId).toBe('string');
-    expect(storedId).toMatch(/^[0-9a-f]{16}$/);
+    expect(storedId).toMatch(/^[0-9a-f]{8}$/);
 
     const storedBlob = JSON.parse(storedBlobJson);
     expect(storedBlob).toHaveProperty('ciphertext');

@@ -33,7 +33,7 @@ import { decryptCommand } from '../src/commands/decrypt.js';
 // Create a valid token by encrypting known content and encoding the ID + key
 const testPlaintext = 'API_KEY=secret123\nDB_HOST=localhost';
 const { blob: testBlob, key: testKey } = encrypt(testPlaintext);
-const testId = Buffer.alloc(8);  // 8-byte ID
+const testId = Buffer.alloc(4);  // 4-byte ID
 const validToken = encode(testId, testKey);
 
 // ─── Tests ────────────────────────────────────────────────────────────────────

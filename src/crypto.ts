@@ -2,10 +2,12 @@ import { randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
 import type { CiphertextBlob, EncryptResult } from './types.js';
 import { CryptoError } from './types.js';
 
+export const KEY_LENGTH = 16;
+
 export function encrypt(plaintext: Buffer | string): EncryptResult {
-  const key = randomBytes(32);
+  const key = randomBytes(KEY_LENGTH);
   const iv = randomBytes(12);
-  const cipher = createCipheriv('aes-256-gcm', key, iv);
+  const cipher = createCipheriv('aes-128-gcm', key, iv);
 
   const encrypted = Buffer.concat([
     cipher.update(typeof plaintext === 'string' ? Buffer.from(plaintext) : plaintext),
@@ -27,7 +29,7 @@ export function encrypt(plaintext: Buffer | string): EncryptResult {
 export function decrypt(blob: CiphertextBlob, key: Buffer): Buffer {
   try {
     const decipher = createDecipheriv(
-      'aes-256-gcm',
+      'aes-128-gcm',
       key,
       Buffer.from(blob.iv, 'hex')
     );
