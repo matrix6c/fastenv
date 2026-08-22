@@ -263,7 +263,7 @@ Kiro's spec system was the backbone of this project. Two specs live in [`.kiro/s
 
 | Spec | Purpose |
 |------|---------|
-| **`elock-cli`** | The primary spec covering the full CLI — requirements, design, and implementation plan for encryption, decryption, token encoding, .env parsing, merge flow, Redis integration, and testing. |
+| **`fastenv-cli`** | The primary spec covering the full CLI — requirements, design, and implementation plan for encryption, decryption, token encoding, .env parsing, merge flow, Redis integration, and testing. |
 | **`shorten-token`** | A follow-up spec that shortened the token from 16 chunks to 8 by switching from AES-256-GCM (32-byte key + 8-byte ID) to AES-128-GCM (16-byte key + 4-byte ID). |
 
 Each spec contains three documents authored iteratively with Kiro:
@@ -294,7 +294,7 @@ The development followed Kiro's Requirements → Design → Tasks pipeline:
 ```
 .kiro/
 └── specs/
-    ├── elock-cli/
+    ├── fastenv-cli/
     │   ├── requirements.md    # 10 requirements, 50+ acceptance criteria
     │   ├── design.md          # Architecture, interfaces, correctness properties
     │   └── tasks.md           # 14 task groups, dependency graph
