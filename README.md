@@ -213,7 +213,54 @@ If you wanted to take this concept further, here's what you'd do:
 
 ## Built with Kiro
 
-This project was built using [Kiro](https://kiro.dev). See the [`.kiro/`](./.kiro) directory for the specs, steering files, and configuration used during development.
+This project was developed using [Kiro](https://kiro.dev) following its structured Spec-driven workflow. Below is a summary of how Kiro's features shaped the development process.
+
+### Specs
+
+Kiro's spec system was the backbone of this project. Two specs live in [`.kiro/specs/`](./.kiro/specs):
+
+| Spec | Purpose |
+|------|---------|
+| **`elock-cli`** | The primary spec covering the full CLI — requirements, design, and implementation plan for encryption, decryption, token encoding, .env parsing, merge flow, Redis integration, and testing. |
+| **`shorten-token`** | A follow-up spec that shortened the token from 16 chunks to 8 by switching from AES-256-GCM (32-byte key + 8-byte ID) to AES-128-GCM (16-byte key + 4-byte ID). |
+
+Each spec contains three documents authored iteratively with Kiro:
+
+1. **`requirements.md`** — Formal user stories and acceptance criteria (e.g., 10 requirements with 50+ acceptance criteria for the main spec).
+2. **`design.md`** — Architecture diagrams (Mermaid), module interfaces, data models, and correctness properties for property-based testing.
+3. **`tasks.md`** — A dependency-ordered implementation plan with task waves. Each task references specific requirement IDs for traceability, and checkpoints gate progress.
+
+### Workflow
+
+The development followed Kiro's Requirements → Design → Tasks pipeline:
+
+1. **Requirements phase** — Drafted acceptance criteria for each command, flag, and error path. Kiro refined ambiguities (e.g., trimmed string comparison for merge, mutual exclusivity of `--dry-run`/`--replace`).
+2. **Design phase** — Produced module boundaries, TypeScript interfaces, encrypt/decrypt sequence diagrams, and formal correctness properties (crypto round-trip, token round-trip, parse/stringify idempotency, diff partitioning, merge preservation).
+3. **Task execution** — Kiro worked through the task plan wave-by-wave in Autopilot mode, implementing modules, writing tests (unit + property-based via `fast-check`), and verifying at checkpoints.
+4. **Iterative refinement** — The `shorten-token` spec was created after the initial implementation to iterate on token UX, demonstrating how Kiro specs support incremental feature evolution on an existing codebase.
+
+### Key Kiro Practices Used
+
+- **Spec-driven development** — Every line of code traces back to a numbered requirement.
+- **Correctness properties in design** — Six formal properties were defined in the design doc and implemented as property-based tests (100+ generated cases each), ensuring universal behavior rather than just example-based coverage.
+- **Task dependency graphs** — Parallelizable work was identified upfront (e.g., crypto, token, and parser modules developed concurrently in wave 2).
+- **Checkpoints** — Explicit pause points in the task list to run the full test suite and course-correct before proceeding.
+- **Traceability** — Every task and sub-task cites the requirement IDs it satisfies, making it easy to verify coverage.
+
+### Project Structure (Kiro artifacts)
+
+```
+.kiro/
+└── specs/
+    ├── elock-cli/
+    │   ├── requirements.md    # 10 requirements, 50+ acceptance criteria
+    │   ├── design.md          # Architecture, interfaces, correctness properties
+    │   └── tasks.md           # 14 task groups, dependency graph
+    └── shorten-token/
+        ├── requirements.md    # 7 FR + 3 NFR for token shortening
+        ├── design.md          # Targeted changes across 3 source files + tests
+        └── tasks.md           # 3 task groups with wave ordering
+```
 
 ## License
 
