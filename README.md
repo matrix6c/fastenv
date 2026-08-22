@@ -211,6 +211,48 @@ If you wanted to take this concept further, here's what you'd do:
 
 ---
 
+## Third-Party Services & Libraries
+
+### Upstash Redis (external service)
+
+fastenv uses [Upstash Redis](https://upstash.com/docs/redis/overall/getstarted) as its ephemeral blob store. The free tier is sufficient for casual use:
+
+| Limit | Free Tier |
+|-------|-----------|
+| Commands/day | 10,000 |
+| Storage | 256 MB |
+| Max request size | 1 MB |
+| Bandwidth | 50 GB/month |
+
+Encrypted `.env` blobs are small (typically < 5 KB), so the free tier easily supports hundreds of shares per day. No billing is required unless you exceed those limits. See [Upstash pricing](https://upstash.com/pricing) for details.
+
+### Runtime dependencies
+
+| Package | License | Purpose |
+|---------|---------|---------|
+| [`@upstash/redis`](https://github.com/upstash/upstash-redis) | MIT | HTTP-based Redis client for storing/retrieving encrypted blobs |
+| [`commander`](https://github.com/tj/commander.js) | MIT | CLI argument parsing and help generation |
+| [`inquirer`](https://github.com/SBoudrias/Inquirer.js) | MIT | Interactive merge prompts (accept/reject keys) |
+| [`dotenv`](https://github.com/motdotla/dotenv) | BSD-2-Clause | Environment variable loading |
+| [Node.js `crypto`](https://nodejs.org/api/crypto.html) | (built-in) | AES-128-GCM encryption/decryption, random byte generation |
+
+### Dev dependencies
+
+| Package | License | Purpose |
+|---------|---------|---------|
+| [`vitest`](https://github.com/vitest-dev/vitest) | MIT | Test runner |
+| [`fast-check`](https://github.com/dubzzz/fast-check) | MIT | Property-based testing |
+| [`tsx`](https://github.com/privatenumber/tsx) | MIT | TypeScript execution for development |
+| [`typescript`](https://github.com/microsoft/TypeScript) | Apache-2.0 | Type checking and compilation |
+
+### Cost summary
+
+- **Upstash Redis**: Free for up to 10,000 commands/day. No credit card required for the free tier.
+- **All npm packages**: Free and open-source.
+- **Node.js crypto**: Built into the runtime, no external calls or costs.
+
+---
+
 ## Built with Kiro
 
 This project was developed using [Kiro](https://kiro.dev) following its structured Spec-driven workflow. Below is a summary of how Kiro's features shaped the development process.
