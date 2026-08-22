@@ -1,8 +1,8 @@
-# Implementation Plan: elock CLI
+# Implementation Plan: fastenv CLI
 
 ## Overview
 
-Implement the elock CLI tool — a TypeScript Node.js application that encrypts .env files client-side using AES-256-GCM, uploads ciphertext to Upstash Redis with 24h expiry, and provides a shareable key for teammates to decrypt and merge secrets into their local .env files.
+Implement the fastenv CLI tool — a TypeScript Node.js application that encrypts .env files client-side using AES-256-GCM, uploads ciphertext to Upstash Redis with 24h expiry, and provides a shareable key for teammates to decrypt and merge secrets into their local .env files.
 
 ## Tasks
 
@@ -16,7 +16,7 @@ Implement the elock CLI tool — a TypeScript Node.js application that encrypts 
 
   - [x] 1.2 Create shared type definitions in `src/types.ts`
     - Define `EnvEntryType`, `QuoteStyle`, `EnvEntry`, `CiphertextBlob`, `EncryptResult`, `DecodedToken`, `NewKey`, `ChangedKey`, `UnchangedKey`, `DiffResult` types and interfaces
-    - Define custom error classes: `ElockError`, `FileError`, `TokenError`, `RedisError`, `CryptoError`, `ConfigError`
+    - Define custom error classes: `fastenvError`, `FileError`, `TokenError`, `RedisError`, `CryptoError`, `ConfigError`
     - _Requirements: 7.6, 7.7, 8.7_
 
 - [x] 2. Implement crypto module
@@ -86,7 +86,7 @@ Implement the elock CLI tool — a TypeScript Node.js application that encrypts 
 - [x] 6. Implement diff/merge module
   - [x] 6.1 Implement `src/diffMerge.ts` with diff and applyMerge functions
     - Implement `diff(existing: Map<string, string>, incoming: Map<string, string>): DiffResult` categorizing keys into newKeys, changedKeys, unchangedKeys buckets using trimmed string comparison
-    - Implement `applyMerge(existingEntries: EnvEntry[], acceptedNew: NewKey[], acceptedChanges: ChangedKey[]): string` updating changed values in-place, preserving structural elements, and appending new keys under a dated comment header `# --- added by elock <ISO-date> ---`
+    - Implement `applyMerge(existingEntries: EnvEntry[], acceptedNew: NewKey[], acceptedChanges: ChangedKey[]): string` updating changed values in-place, preserving structural elements, and appending new keys under a dated comment header `# --- added by fastenv <ISO-date> ---`
     - Implement `formatValue(value: string, quoteStyle: QuoteStyle): string` preserving original quote style
     - _Requirements: 4.1, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9_
 
@@ -169,18 +169,18 @@ Implement the elock CLI tool — a TypeScript Node.js application that encrypts 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 12. Implement CLI entry point and wiring
-  - [x] 12.1 Implement `bin/elock.ts` CLI entry point with commander
+  - [x] 12.1 Implement `bin/fastenv.ts` CLI entry point with commander
     - Set up `commander` program with name, description, and version from package.json
     - Register `encrypt [path]` command wired to `encryptCommand`
     - Register `decrypt <key>` command with `--dry-run` and `--replace` options wired to `decryptCommand`
-    - Add top-level error handler that catches `ElockError` subclasses, prints message to stderr, and exits with appropriate code
+    - Add top-level error handler that catches `fastenvError` subclasses, prints message to stderr, and exits with appropriate code
     - Handle unrecognized commands with error message and usage info
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
   - [x] 12.2 Install dependencies and verify build
     - Run `npm install` to install all dependencies
     - Run `npm run build` to verify TypeScript compilation succeeds
-    - Verify the `dist/bin/elock.js` entry point is generated correctly
+    - Verify the `dist/bin/fastenv.js` entry point is generated correctly
     - _Requirements: 9.1, 9.2_
 
 - [x] 13. Write integration tests

@@ -2,11 +2,11 @@
 
 ## Introduction
 
-elock is a Node.js CLI tool distributed as an npm package that solves the problem of insecure .env file sharing among developers. It encrypts a .env file client-side using AES-256-GCM, uploads the ciphertext to Upstash Redis with a 24-hour expiry, and returns a single shareable key. A teammate uses that key to fetch, decrypt, and intelligently merge the secrets into their local .env file. All encryption and decryption happens client-side — Upstash Redis only stores opaque ciphertext blobs.
+fastenv is a Node.js CLI tool distributed as an npm package that solves the problem of insecure .env file sharing among developers. It encrypts a .env file client-side using AES-256-GCM, uploads the ciphertext to Upstash Redis with a 24-hour expiry, and returns a single shareable key. A teammate uses that key to fetch, decrypt, and intelligently merge the secrets into their local .env file. All encryption and decryption happens client-side — Upstash Redis only stores opaque ciphertext blobs.
 
 ## Glossary
 
-- **CLI**: The elock command-line interface application
+- **CLI**: The fastenv command-line interface application
 - **Shareable_Key**: A string in the format `envlock_XXXX-XXXX-XXXX-XXXX` encoding both a Redis lookup ID and an AES-256-GCM decryption key
 - **Token**: The portion of the Shareable_Key after the `envlock_` prefix, composed of dash-separated 4-character chunks using a base32 or base58 alphabet
 - **ID_Portion**: The segment of the Token used to look up the ciphertext blob in Redis
@@ -27,8 +27,8 @@ elock is a Node.js CLI tool distributed as an npm package that solves the proble
 
 #### Acceptance Criteria
 
-1. WHEN the user runs `elock encrypt` without a path argument, THE CLI SHALL read the `.env` file in the current working directory
-2. WHEN the user runs `elock encrypt <path>`, THE CLI SHALL read the file at the specified path
+1. WHEN the user runs `fastenv encrypt` without a path argument, THE CLI SHALL read the `.env` file in the current working directory
+2. WHEN the user runs `fastenv encrypt <path>`, THE CLI SHALL read the file at the specified path
 3. WHEN the input file is read successfully, THE CLI SHALL generate a random 256-bit AES key using `crypto.randomBytes(32)`
 4. WHEN the AES key is generated, THE CLI SHALL encrypt the file contents using AES-256-GCM with a random 12-byte initialization vector generated via `crypto.randomBytes(12)`
 5. WHEN encryption succeeds, THE CLI SHALL upload a JSON object containing `ciphertext`, `iv`, and `authTag` fields to Upstash Redis keyed by the ID_Portion
@@ -44,7 +44,7 @@ elock is a Node.js CLI tool distributed as an npm package that solves the proble
 
 #### Acceptance Criteria
 
-1. WHEN the user runs `elock decrypt <key>`, THE CLI SHALL parse the Shareable_Key to extract the ID_Portion and Secret_Key_Portion
+1. WHEN the user runs `fastenv decrypt <key>`, THE CLI SHALL parse the Shareable_Key to extract the ID_Portion and Secret_Key_Portion
 2. WHEN the ID_Portion is extracted, THE CLI SHALL fetch the Ciphertext_Blob from Upstash Redis using the ID_Portion as the key
 3. WHEN the Ciphertext_Blob is fetched, THE CLI SHALL decrypt the ciphertext using AES-256-GCM with the Secret_Key_Portion, iv, and authTag
 4. WHEN decryption succeeds and no `.env` file exists in the current working directory, THE CLI SHALL write the decrypted content to a new `.env` file and print a success message indicating the file was created
@@ -52,7 +52,7 @@ elock is a Node.js CLI tool distributed as an npm package that solves the proble
 6. IF the Shareable_Key format is invalid, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating an invalid key format
 7. IF the Redis key is not found or expired, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating the key has expired or does not exist
 8. IF decryption fails due to an incorrect key or tampered ciphertext, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating authentication failure
-9. IF the user runs `elock decrypt` without providing a key argument, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating that a Shareable_Key argument is required
+9. IF the user runs `fastenv decrypt` without providing a key argument, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating that a Shareable_Key argument is required
 10. IF the Redis fetch fails due to a network error or unavailable service, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating a connection failure without revealing any secret material
 11. IF writing the `.env` file fails due to filesystem errors, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating the file could not be written
 
@@ -62,11 +62,11 @@ elock is a Node.js CLI tool distributed as an npm package that solves the proble
 
 #### Acceptance Criteria
 
-1. WHEN the user passes `--dry-run` to `elock decrypt` and a `.env` file exists in the current working directory, THE CLI SHALL print the categorized diff to stdout showing new keys, changed keys, and unchanged keys with their counts, without writing to disk or prompting the user
-2. WHEN the user passes `--dry-run` to `elock decrypt` and no `.env` file exists in the current working directory, THE CLI SHALL print all decrypted keys categorized as new keys to stdout without writing to disk
-3. WHEN the user passes `--replace` to `elock decrypt`, THE CLI SHALL overwrite the existing `.env` file with the full decrypted content without triggering the Merge_Flow
-4. WHEN the user passes `--replace` to `elock decrypt` and no `.env` file exists in the current working directory, THE CLI SHALL write the decrypted content to a new `.env` file without triggering the Merge_Flow
-5. IF the user passes both `--dry-run` and `--replace` to `elock decrypt`, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating the flags are mutually exclusive
+1. WHEN the user passes `--dry-run` to `fastenv decrypt` and a `.env` file exists in the current working directory, THE CLI SHALL print the categorized diff to stdout showing new keys, changed keys, and unchanged keys with their counts, without writing to disk or prompting the user
+2. WHEN the user passes `--dry-run` to `fastenv decrypt` and no `.env` file exists in the current working directory, THE CLI SHALL print all decrypted keys categorized as new keys to stdout without writing to disk
+3. WHEN the user passes `--replace` to `fastenv decrypt`, THE CLI SHALL overwrite the existing `.env` file with the full decrypted content without triggering the Merge_Flow
+4. WHEN the user passes `--replace` to `fastenv decrypt` and no `.env` file exists in the current working directory, THE CLI SHALL write the decrypted content to a new `.env` file without triggering the Merge_Flow
+5. IF the user passes both `--dry-run` and `--replace` to `fastenv decrypt`, THEN THE CLI SHALL exit with a non-zero code and print an error message indicating the flags are mutually exclusive
 6. WHILE `--dry-run` is active, THE CLI SHALL produce zero side effects on the filesystem
 
 ### Requirement 4: Merge Flow
@@ -78,7 +78,7 @@ elock is a Node.js CLI tool distributed as an npm package that solves the proble
 1. WHEN the Merge_Flow is triggered, THE CLI SHALL categorize keys into three buckets: new keys (present in decrypted, absent in existing), changed keys (present in both with different values), and unchanged keys (identical values)
 2. WHEN new keys are identified, THE CLI SHALL prompt the user for each new key displaying the key name and its value in the format `Add NEW_KEY=<value>? (y/n)`
 3. WHEN changed keys are identified, THE CLI SHALL prompt the user for each changed key displaying both current and new values in the format showing `current: <old_val>` and `new: <new_val>` followed by `Overwrite? (y/n)`
-4. WHEN the user accepts new keys, THE CLI SHALL append accepted keys at the end of the existing Env_File under a comment header in the format `# --- added by elock <ISO-date> ---`
+4. WHEN the user accepts new keys, THE CLI SHALL append accepted keys at the end of the existing Env_File under a comment header in the format `# --- added by fastenv <ISO-date> ---`
 5. WHEN the user accepts changed keys, THE CLI SHALL update the values in-place preserving the original key position in the file
 6. THE CLI SHALL preserve all existing comments, blank lines, and key ordering in the merged output for lines that are not modified
 7. THE CLI SHALL skip unchanged keys without prompting the user
@@ -150,11 +150,11 @@ elock is a Node.js CLI tool distributed as an npm package that solves the proble
 
 #### Acceptance Criteria
 
-1. WHEN the user runs `elock --help` or `elock -h`, THE CLI SHALL print usage information listing all available commands (`encrypt`, `decrypt`) and global flags (`--help`, `--version`), then exit with code 0
-2. WHEN the user runs `elock --version` or `elock -v`, THE CLI SHALL print only the current version string as specified in package.json (e.g., `1.0.0`) to stdout, then exit with code 0
+1. WHEN the user runs `fastenv --help` or `fastenv -h`, THE CLI SHALL print usage information listing all available commands (`encrypt`, `decrypt`) and global flags (`--help`, `--version`), then exit with code 0
+2. WHEN the user runs `fastenv --version` or `fastenv -v`, THE CLI SHALL print only the current version string as specified in package.json (e.g., `1.0.0`) to stdout, then exit with code 0
 3. WHEN the user runs an unrecognized command, THE CLI SHALL exit with a non-zero code and print an error message indicating the unrecognized command followed by the usage information to stderr
 4. THE CLI SHALL use `commander` or `yargs` as the argument parsing library
-5. WHEN the user runs `elock encrypt --help` or `elock decrypt --help`, THE CLI SHALL print subcommand-specific usage information listing the arguments and flags for that command, then exit with code 0
+5. WHEN the user runs `fastenv encrypt --help` or `fastenv decrypt --help`, THE CLI SHALL print subcommand-specific usage information listing the arguments and flags for that command, then exit with code 0
 
 ### Requirement 10: Testing
 

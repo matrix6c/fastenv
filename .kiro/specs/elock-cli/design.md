@@ -2,7 +2,7 @@
 
 ## Overview
 
-elock is a Node.js CLI tool that provides secure, ephemeral sharing of .env files between developers. The architecture follows a client-side encryption model where all cryptographic operations happen locally — Upstash Redis serves only as a blind relay for opaque ciphertext blobs with automatic 24-hour expiry.
+fastenv is a Node.js CLI tool that provides secure, ephemeral sharing of .env files between developers. The architecture follows a client-side encryption model where all cryptographic operations happen locally — Upstash Redis serves only as a blind relay for opaque ciphertext blobs with automatic 24-hour expiry.
 
 The tool exposes two primary commands (`encrypt` and `decrypt`) and handles the full lifecycle: parsing .env files into structured data, encrypting content with AES-256-GCM, encoding keys into a human-friendly token format, uploading/downloading from Redis, and intelligently merging decrypted content into existing local .env files.
 
@@ -28,8 +28,8 @@ The project is written in TypeScript with ESM module system, compiled via `tsx` 
 ```mermaid
 flowchart TB
     subgraph CLI["CLI Layer (commander)"]
-        E[elock encrypt]
-        D[elock decrypt]
+        E[fastenv encrypt]
+        D[fastenv decrypt]
     end
 
     subgraph Core["Core Modules"]
@@ -63,9 +63,9 @@ flowchart TB
 ### Project Structure
 
 ```
-elock/
+fastenv/
 ├── bin/
-│   └── elock.ts              # CLI entry point
+│   └── fastenv.ts              # CLI entry point
 ├── src/
 │   ├── crypto.ts             # AES-256-GCM encrypt/decrypt
 │   ├── token.ts              # Shareable key encode/decode
@@ -100,7 +100,7 @@ sequenceDiagram
     participant Token as token
     participant Redis as redis
 
-    User->>CLI: elock encrypt [path]
+    User->>CLI: fastenv encrypt [path]
     CLI->>CLI: Read file (path or .env)
     CLI->>Crypto: encrypt(fileContent)
     Crypto->>Crypto: randomBytes(32) → AES key
@@ -127,7 +127,7 @@ sequenceDiagram
     participant Merge as diffMerge
     participant Prompts as prompts
 
-    User->>CLI: elock decrypt <key> [--dry-run|--replace]
+    User->>CLI: fastenv decrypt <key> [--dry-run|--replace]
     CLI->>Token: decode(key)
     Token-->>CLI: { idPortion, secretKeyPortion }
     CLI->>Redis: GET idPortion
@@ -587,7 +587,7 @@ export function applyMerge(
 
   if (acceptedNew.length > 0) {
     const date = new Date().toISOString().split('T')[0];
-    lines.push(`# --- added by elock ${date} ---`);
+    lines.push(`# --- added by fastenv ${date} ---`);
     for (const { key, value } of acceptedNew) {
       lines.push(`${key}=${value}`);
     }
@@ -769,7 +769,7 @@ export async function decryptCommand(key: string, options: DecryptOptions): Prom
 }
 ```
 
-### `bin/elock.ts`
+### `bin/fastenv.ts`
 
 Entry point with commander setup.
 
@@ -786,7 +786,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
 
 program
-  .name('elock')
+  .name('fastenvnv')
   .description('Securely share .env files with teammates')
   .version(pkg.version);
 
@@ -885,15 +885,15 @@ const example: DiffResult = {
 **package.json**
 ```json
 {
-  "name": "elock",
+  "name": "fastenvnvnv",
   "version": "1.0.0",
   "type": "module",
   "bin": {
-    "elock": "./dist/bin/elock.js"
+    "fastenvnvnvnv": "./disfafafafafafafafafafafafafafastfastfafastenvnvnvnvnvnv/elock.js"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsx bin/elock.ts",
+    "dev": "tsx bin/fastenv.ts",
     "test": "vitest --run",
     "test:watch": "vitest"
   },
@@ -1012,30 +1012,30 @@ Errors are categorized by source and severity. All errors result in a non-zero e
 
 ```typescript
 /** Custom error classes for typed error handling */
-export class ElockError extends Error {
+export class fastenvError extends Error {
   constructor(message: string, public readonly exitCode: number = 1) {
     super(message);
-    this.name = 'ElockError';
+    this.name = 'fastenvError';
   }
 }
 
-export class FileError extends ElockError {
+export class FileError extends fastenvError {
   constructor(message: string) { super(message); this.name = 'FileError'; }
 }
 
-export class TokenError extends ElockError {
+export class TokenError extends fastenvError {
   constructor(message: string) { super(message); this.name = 'TokenError'; }
 }
 
-export class RedisError extends ElockError {
+export class RedisError extends fastenvError {
   constructor(message: string) { super(message); this.name = 'RedisError'; }
 }
 
-export class CryptoError extends ElockError {
+export class CryptoError extends fastenvError {
   constructor(message: string) { super(message); this.name = 'CryptoError'; }
 }
 
-export class ConfigError extends ElockError {
+export class ConfigError extends fastenvError {
   constructor(message: string) { super(message); this.name = 'ConfigError'; }
 }
 ```
@@ -1044,7 +1044,7 @@ export class ConfigError extends ElockError {
 
 1. Each module throws typed errors (`FileError`, `TokenError`, etc.) with safe messages
 2. The command handler catches errors at the top level
-3. If the error is an `ElockError`, its message is printed to stderr and `process.exit(exitCode)` is called
+3. If the error is an `fastenvnvError`, its message is printed to stderr and `process.exit(exitCode)` is called
 4. If the error is unexpected, a generic "An unexpected error occurred" message is printed — no stack traces or internal state are exposed in production
 
 ### Security Constraints on Errors
@@ -1097,7 +1097,7 @@ import { parse, stringify, toMap } from '../src/parseEnv.js';
 import { diff } from '../src/diffMerge.js';
 
 describe('Property-based tests', () => {
-  // Feature: elock-cli, Property 1: Crypto encrypt/decrypt round-trip
+  // Feature: fastenvnv-cli, Property 1: Crypto encrypt/decrypt round-trip
   it('crypto round-trip preserves plaintext', () => {
     fc.assert(
       fc.property(fc.uint8Array({ minLength: 0, maxLength: 16384 }), (data) => {
@@ -1110,7 +1110,7 @@ describe('Property-based tests', () => {
     );
   });
 
-  // Feature: elock-cli, Property 2: Token encode/decode round-trip
+  // Feature: fastenv-cli, Property 2: Token encode/decode round-trip
   it('token encode/decode round-trip', () => {
     fc.assert(
       fc.property(
@@ -1129,7 +1129,7 @@ describe('Property-based tests', () => {
     );
   });
 
-  // Feature: elock-cli, Property 3: Token case-insensitive decode
+  // Feature: fastenv-cli, Property 3: Token case-insensitive decode
   it('token decode is case-insensitive', () => {
     fc.assert(
       fc.property(
@@ -1149,7 +1149,7 @@ describe('Property-based tests', () => {
     );
   });
 
-  // Feature: elock-cli, Property 4: .env parse/stringify round-trip
+  // Feature: fastenv-cli, Property 4: .env parse/stringify round-trip
   it('parse/stringify/parse is idempotent on structure', () => {
     const envGen = fc.array(
       fc.oneof(
@@ -1185,7 +1185,7 @@ describe('Property-based tests', () => {
     );
   });
 
-  // Feature: elock-cli, Property 5: Diff exhaustive partitioning
+  // Feature: fastenv-cli, Property 5: Diff exhaustive partitioning
   it('diff partitions all incoming keys into exactly one bucket', () => {
     const mapGen = fc.array(
       fc.tuple(
@@ -1214,7 +1214,7 @@ describe('Property-based tests', () => {
     );
   });
 
-  // Feature: elock-cli, Property 6: Merge structural preservation
+  // Feature: fastenv-cli, Property 6: Merge structural preservation
   it('merge preserves non-modified structural elements', () => {
     // Tested via generated EnvEntry arrays and merge decisions
     // verifying comments, blanks, and unchanged keys retain position and content
@@ -1226,7 +1226,7 @@ describe('Property-based tests', () => {
 
 Every property-based test includes a comment in the format:
 ```
-// Feature: elock-cli, Property {N}: {property title}
+// Feature: fastenv-cli, Property {N}: {property title}
 ```
 
 This links tests to their formal specification in this design document, enabling traceability from requirements → design properties → tests.

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Reduce the elock token from 16 chunks to 8 chunks by switching to AES-128-GCM (16-byte key) and 4-byte ID.
+Reduce the fastenv token from 16 chunks to 8 chunks by switching to AES-128-GCM (16-byte key) and 4-byte ID.
 
 ## Tasks
 
