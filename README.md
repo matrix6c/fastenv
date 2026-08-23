@@ -190,7 +190,7 @@ To locally test the full flow:
 4. Copy the printed token
 5. Decrypt it (in a different directory or after renaming your `.env`):
    ```bash
-   npx tsx bin/fast.ts decrypt <token> npx tsx bin/fast.ts decrypt <token> path/of/new/directory
+   npx tsx bin/fast.ts decrypt <token> path/of/new/directory
    ```
 6. Verify the decrypted content matches the original
 
