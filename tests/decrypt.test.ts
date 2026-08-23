@@ -83,20 +83,20 @@ describe('decryptCommand', () => {
   });
 
   describe('mutually exclusive flags', () => {
-    it('throws Error when --dry-run and --replace are both set', async () => {
+    it('throws Error when --status and --replace are both set', async () => {
       await expect(
-        decryptCommand(validToken, { dryRun: true, replace: true })
-      ).rejects.toThrow('--dry-run and --replace are mutually exclusive');
+        decryptCommand(validToken, { status: true, replace: true })
+      ).rejects.toThrow('--status and --replace are mutually exclusive');
     });
   });
 
-  describe('--dry-run with no existing .env', () => {
+  describe('--status with no existing .env', () => {
     it('prints new keys to stdout', async () => {
       mockRetrieve.mockResolvedValue(testBlob);
       // access throws → file does not exist
       mockAccess.mockRejectedValue(new Error('ENOENT'));
 
-      await decryptCommand(validToken, { dryRun: true });
+      await decryptCommand(validToken, { status: true });
 
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('New keys'));
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('API_KEY=secret123'));
@@ -104,7 +104,7 @@ describe('decryptCommand', () => {
     });
   });
 
-  describe('--dry-run with existing .env', () => {
+  describe('--status with existing .env', () => {
     it('prints categorized diff (new, changed, unchanged)', async () => {
       mockRetrieve.mockResolvedValue(testBlob);
       // access succeeds → file exists
@@ -112,7 +112,7 @@ describe('decryptCommand', () => {
       // Existing .env has DB_HOST with different value and is missing API_KEY
       mockReadFile.mockResolvedValue('DB_HOST=oldhost\nOTHER=val');
 
-      await decryptCommand(validToken, { dryRun: true });
+      await decryptCommand(validToken, { status: true });
 
       // Should show API_KEY as new
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('New keys'));

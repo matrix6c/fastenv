@@ -38,9 +38,9 @@ program
 program
   .command('decrypt <key>')
   .description('Decrypt a shareable key and merge into local .env')
-  .option('--dry-run', 'Preview changes without writing to disk')
+  .option('--status', 'Preview changes without writing to disk')
   .option('--replace', 'Overwrite existing .env without prompting')
-  .action(async (key: string, options: { dryRun?: boolean; replace?: boolean }) => {
+  .action(async (key: string, options: { status?: boolean; replace?: boolean }) => {
     try {
       await decryptCommand(key, options);
     } catch (err) {

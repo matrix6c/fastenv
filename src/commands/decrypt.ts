@@ -9,7 +9,7 @@ import { promptNewKeys, promptChangedKeys } from '../prompts.js';
 import { FileError } from '../types.js';
 
 export interface DecryptOptions {
-  dryRun?: boolean;
+  status?: boolean;
   replace?: boolean;
 }
 
@@ -20,8 +20,8 @@ export interface DecryptOptions {
  */
 export async function decryptCommand(key: string, options: DecryptOptions): Promise<void> {
   // Validate mutually exclusive flags
-  if (options.dryRun && options.replace) {
-    throw new Error('--dry-run and --replace are mutually exclusive');
+  if (options.status && options.replace) {
+    throw new Error('--status and --replace are mutually exclusive');
   }
 
   // Decode token (throws TokenError if invalid)
@@ -44,8 +44,8 @@ export async function decryptCommand(key: string, options: DecryptOptions): Prom
     // File doesn't exist
   }
 
-  // --dry-run with no existing file: show all keys as new
-  if (options.dryRun && existingContent === null) {
+  // --status with no existing file: show all keys as new
+  if (options.status && existingContent === null) {
     const entries = parse(plaintext);
     const map = toMap(entries);
     console.log(`New keys (${map.size}):`);
@@ -64,14 +64,14 @@ export async function decryptCommand(key: string, options: DecryptOptions): Prom
     return;
   }
 
-  // Merge flow: existing file exists and neither --replace nor --dry-run alone triggers direct write
+  // Merge flow: existing file exists and neither --replace nor --status alone triggers direct write
   const existingEntries = parse(existingContent);
   const incomingEntries = parse(plaintext);
   const existingMap = toMap(existingEntries);
   const incomingMap = toMap(incomingEntries);
   const result = diff(existingMap, incomingMap);
 
-  if (options.dryRun) {
+  if (options.status) {
     console.log(`New keys (${result.newKeys.length}):`);
     result.newKeys.forEach((k) => console.log(`  ${k.key}=${k.value}`));
     console.log(`Changed keys (${result.changedKeys.length}):`);
