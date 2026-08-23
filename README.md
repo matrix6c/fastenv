@@ -50,8 +50,8 @@ cd fastenv
 npm install
 
 # Run directly via tsx (no build step needed)
-npx tsx bin/fast.ts encrypt path/of/env/file/to/encrypt
-npx tsx bin/fast.ts decrypt path/of/project <token>
+npx tsx bin/fast.ts encrypt path/to/env/file/to/encrypt
+npx tsx bin/fast.ts decrypt <token> path/of/project
 ```
 
 ### Option 3: Build and run from compiled output
