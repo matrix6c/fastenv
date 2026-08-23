@@ -4,14 +4,21 @@ import { RedisError } from './types.js';
 
 export const DEFAULT_EXPIRY_SECONDS = 100;
 
-const UPSTASH_URL = "https://relieved-beetle-158685.upstash.io";
-const UPSTASH_TOKEN = "gQAAAAAAAmvdAAIgcDE0ZDk2YjFhNDEzODg0ZjhjYjAzZTE0OTUwMTJkYzYwYw";
-
 /**
- * Creates the Redis client with embedded credentials.
+ * Creates the Redis client using environment variables.
+ * Requires UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to be set.
  */
 export function createClient(): Redis {
-  return new Redis({ url: UPSTASH_URL, token: UPSTASH_TOKEN });
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    throw new RedisError(
+      'Missing environment variables: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be set'
+    );
+  }
+
+  return new Redis({ url, token });
 }
 
 /**
@@ -50,3 +57,4 @@ export async function retrieve(id: string): Promise<CiphertextBlob> {
 
   return parsed as CiphertextBlob;
 }
+  
