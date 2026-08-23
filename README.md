@@ -50,8 +50,8 @@ cd fastenv
 npm install
 
 # Run directly via tsx (no build step needed)
-npx tsx bin/fast.ts encrypt path/to/env/file/to/encrypt
-npx tsx bin/fast.ts decrypt <token> path/of/project
+npx tsx bin/fast.ts encrypt path/to/.env.production
+npx tsx bin/fast.ts decrypt <token> path/to/new/directory
 ```
 
 ### Option 3: Build and run from compiled output
@@ -156,26 +156,26 @@ Overwrites your existing `.env` completely with the decrypted content, no questi
 
 ## Testing Instructions
 
-### Run the test suite
+### Prerequisites — Upstash Redis Setup
+
+To run the integration tests or test the CLI manually, you need your own [Upstash Redis](https://upstash.com) database:
+
+1. Create a free account at [https://upstash.com](https://upstash.com) (no credit card required).
+2. Create a new Redis database.
+3. Copy the **REST URL** and **REST Token** from the Upstash console.
+4. Create a `.env` file in the project root (see `.env.example` for the format):
+   ```env
+   UPSTASH_REDIS_REST_URL="https://your-instance.upstash.io"
+   UPSTASH_REDIS_REST_TOKEN="your-token-here"
+   ```
+
+### Test the project locally
 
 ```bash
 npm install
-npm test
 ```
 
-This runs all unit tests and property-based tests via Vitest. The test suite covers:
-
-- Crypto module (AES-128-GCM encrypt/decrypt round-trips)
-- Token encoding/decoding (base32 round-trips)
-- `.env` parsing and stringification
-- Diff/merge logic (new, changed, unchanged key classification)
-- Integration tests (full encrypt → decrypt flow with mocked Redis)
-- Error handling (expired tokens, invalid input, missing config)
-- Property-based tests via fast-check (crypto, token, parseEnv, diffMerge)
-
-### Manual end-to-end test
-
-To manually test the full flow:
+To locally test the full flow:
 
 1. Create a `.env` file with the test credentials above
 2. Create a test file to encrypt (e.g. `test.env`):
@@ -190,7 +190,7 @@ To manually test the full flow:
 4. Copy the printed token
 5. Decrypt it (in a different directory or after renaming your `.env`):
    ```bash
-   npx tsx bin/fast.ts decrypt <token>
+   npx tsx bin/fast.ts decrypt <token> npx tsx bin/fast.ts decrypt <token> path/of/new/directory
    ```
 6. Verify the decrypted content matches the original
 
